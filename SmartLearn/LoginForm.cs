@@ -19,6 +19,7 @@ namespace SmartLearn
 		{
 			InitializeComponent();
 			webBrowser1.ScriptErrorsSuppressed = true;
+			//to do: disable message
 			webBrowser1.Navigate("http://www.zhixue.com");
 			timer1.Start();
 		}
@@ -30,7 +31,7 @@ namespace SmartLearn
 				timer1.Stop();
 
 				this.jar = ParseCookie(webBrowser1.Document.Cookie);
-				webBrowser1.Document.Cookie = null;//clear WebBrowser cookie
+				webBrowser1.Document.Cookie = "";//clear WebBrowser cookie
 
 				webBrowser1.Dispose();
 				this.Dispose();
@@ -53,6 +54,11 @@ namespace SmartLearn
 			}
 
 			return myCookieContainer;
+		}
+
+		private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Environment.Exit(0);
 		}
 	}
 }
