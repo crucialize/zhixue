@@ -177,13 +177,13 @@ namespace SmartLearn
 					table.Columns.Add("id");
 					table.Columns.Add("姓名");
 					table.Columns.Add("班级");
-					table.Columns.Add("总分");
-					table.Columns.Add("总分r");
+					table.Columns.Add("总分",typeof(double));
+					table.Columns.Add("总分r",typeof(int));
 
 					foreach (var sn in subjectList)
 					{
-						table.Columns.Add(sn);
-						table.Columns.Add(sn + "r");
+						table.Columns.Add(sn, typeof(double));
+						table.Columns.Add(sn + "r", typeof(int));
 					}
 
 					//fill the table
@@ -206,9 +206,44 @@ namespace SmartLearn
 						table.Rows.Add(row);
 					}
 
-					//to do:rank
+					table = RankScore(table, "总分");
 
+					//why?: datatable is refer type
+					foreach(var sn in subjectList)
+					{
+						table=RankScore(table, sn);
+					}
 
+					DataTable RankScore(DataTable t,string ColumnName)
+					{
+						t.DefaultView.Sort = ColumnName + " DESC";
+						var SortedTable=t.DefaultView.ToTable();
+
+						int lastRank = 1;
+						double lastScore = 0;
+						for (int i = 0; i < SortedTable.Rows.Count; i++)
+						{
+							if (i == 0)
+							{
+								SortedTable.Rows[i][ColumnName + "r"] = lastRank = 1;
+							}
+							if (lastScore > (double)SortedTable.Rows[i][ColumnName])
+							{
+								SortedTable.Rows[i][ColumnName + "r"] = lastRank = i + 1;
+							}
+							else
+							{
+								SortedTable.Rows[i][ColumnName + "r"] = lastRank;
+							}
+
+							lastScore = (double)SortedTable.Rows[i][ColumnName];
+						}
+
+						t = SortedTable;
+						return SortedTable;
+					}
+
+					//render ViewModel to View
 					new Thread(() =>
 					{
 						var ResultVU = new ResultView(table);

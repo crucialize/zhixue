@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace SmartLearn
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			Directory.CreateDirectory("cache");
 
 			var Login = new LoginForm();
 			Application.Run(Login);
