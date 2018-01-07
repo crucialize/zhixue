@@ -14,16 +14,16 @@ using MetroFramework;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using RestSharp.Human;
 
 namespace SmartLearn
 {
 	public partial class Form1 : MetroFramework.Forms.MetroForm
 	{
-		const string UrlGetExam = "zhixuebao/zhixuebao/main/getUserExamList/?actualPosition={1}&pageIndex={0}&pageSize=10";
 
 		CookieContainer jar;
 		RestClient client;
-		ExamInfos.Exam[] examList;
+		List<ExamInfos.Exam> examList=new List<ExamInfos.Exam>();
 		List<StudentInfo> infos = new List<StudentInfo>();
 		Dictionary<string, StudentInfo> ReferList = new Dictionary<string, StudentInfo>();
 		string[] classList;
@@ -66,14 +66,33 @@ namespace SmartLearn
 
 			//Get Exam list
 			jar = CookieJar;
-			client = new RestClient("http://www.zhixue.com");
+			client = new RestClient();
 			client.CookieContainer = jar;
 
-			var UrlGetExamFormatted = string.Format(UrlGetExam, 1, 0);
-			var ReqGetExam = new RestRequest(UrlGetExamFormatted, Method.GET);
-			var Exams = JsonConvert.DeserializeObject<ExamInfos>(client.Execute(ReqGetExam).Content);
+			List <ExamInfos.Exam> GetExamList(string TargetURL)
+			{
+				var res = client.Human(new RestRequest(TargetURL, Method.GET));
+				var exams = JsonConvert.DeserializeObject<ExamInfos>(res.Content);
+				return exams.examList;
+			}
 
-			examList = Exams.examList;
+			{
+				//exam
+				const string URLGetExam = "http://www.zhixue.com/zhixuebao/zhixuebao/main/getUserExamList/?actualPosition={1}&pageIndex={0}&pageSize=10";
+				var TargetURL = string.Format(URLGetExam, 1, 0);
+				var exams = GetExamList(TargetURL);
+				examList.AddRange(exams);
+			};
+
+			{
+				//homeworks
+				const string URLGetHomework = "http://www.zhixue.com/zhixuebao/zhixuebao/main/getUserHomeworkList/?subjectCode=&pageIndex={0}&actualPosition={1}";
+				var TargetURL = string.Format(URLGetHomework, 1, 0);
+				var exams = GetExamList(TargetURL);
+				examList.AddRange(exams);
+			};
+
+			examList=examList.OrderByDescending(p => p.examCreateDateTime).ToList();
 
 			foreach (var exam in examList)
 			{

@@ -102,8 +102,9 @@ namespace SmartLearn
 		public class Exam
 		{
 			public string examId, examName;
+			public long examCreateDateTime;
 		}
-		public Exam[] examList;
+		public List<Exam> examList;
 	}
 
 }
