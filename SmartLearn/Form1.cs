@@ -31,6 +31,8 @@ namespace SmartLearn
 		public Form1(CookieContainer CookieJar)
 		{
 			CheckForIllegalCrossThreadCalls = false;
+			ServicePointManager.DefaultConnectionLimit = 20;
+
 			HashSet<string> classList = new HashSet<string>();
 			InitializeComponent();
 
@@ -129,11 +131,9 @@ namespace SmartLearn
 				else if (ExamIndices.Count == 1)
 				{
 
+					
 
 					var examId = examList[metroListView1.SelectedIndices[0]].examId;
-
-
-
 					//Get ScoreJson DATAMODEL from Cache or Web:
 					List<ScoreJson> ScoreCollection = new List<ScoreJson>();
 
@@ -148,6 +148,26 @@ namespace SmartLearn
 					else
 					{
 						//from web:
+
+						//get matched student list
+
+						List<StudentInfo> StudentToGet = new List<StudentInfo>();
+
+						foreach (var stud in infos)
+						{
+
+							bool flag = false;
+							for (int i = 0; i < ClassIndecies.Count; i++)
+							{
+								flag |= classList[ClassIndecies[i]] == stud.ClassID;
+							}
+							if (flag == true)
+								StudentToGet.Add(stud);
+						}
+
+						int GetCount = 0,CBtimes=0;
+						string strLocker = "";
+
 						foreach (var stud in infos)
 						{
 
@@ -159,17 +179,51 @@ namespace SmartLearn
 							if (flag == false)
 								break;
 
-							try
-							{
-								var scoreJ = GetScore(examId, stud);
-								scoreJ.BackId = stud.BackID;
-								scoreJ.FrontId = stud.FrontId;
-								ScoreCollection.Add(scoreJ);
-							}
-							catch (Exception)
+							GetScoreAsync(examId, stud);
+
+
+							void GetScoreAsync(string examId0, StudentInfo stud0)
 							{
 
+								const string pk_pattern = "http://www.zhixue.com/zhixuebao/zhixuebao/personal/studentPkData/?examId={0}&pkId={1}";
+
+								var pk_url = string.Format(pk_pattern, examId0, stud0.BackID);
+								var req = new RestRequest(pk_url, Method.GET);
+								client.HumanAsync(req, res =>
+								{
+									CBtimes++;
+									try
+									{
+
+										var json = JsonConvert.DeserializeObject<ScoreJson[]>(res.Content);
+										json[1].BackId = stud0.BackID;
+										json[1].FrontId = stud0.FrontId;
+										ScoreCollection.Add(json[1]);
+									}
+									catch (Exception)
+									{
+										Console.WriteLine("EXCEPT!");
+									}
+									lock (strLocker)
+									{
+										GetCount++;
+									}
+								});
+
 							}
+
+						}
+
+
+						while (true)
+						{
+							var GetCount0 = GetCount;
+							var ALL0 = StudentToGet.Count;
+							var CBtimes0 = CBtimes;
+							Console.WriteLine("got:{0},all:{1},CBTimes:{2}", GetCount0, ALL0, CBtimes0);
+							if (GetCount0 == ALL0)
+								break;
+							Thread.Sleep(1000);
 						}
 
 						//save into cache:
@@ -201,8 +255,15 @@ namespace SmartLearn
 
 					foreach (var sn in subjectList)
 					{
-						table.Columns.Add(sn, typeof(double));
-						table.Columns.Add(sn + "r", typeof(int));
+						try
+						{
+							table.Columns.Add(sn, typeof(double));
+							table.Columns.Add(sn + "r", typeof(int));
+						}
+						catch (Exception)
+						{
+							//大考有总分列
+						}
 					}
 
 					//fill the table
@@ -280,11 +341,11 @@ namespace SmartLearn
 
 		private ScoreJson GetScore(string examId,StudentInfo stud)
 		{
-			const string pk_pattern = "/zhixuebao/zhixuebao/personal/studentPkData/?examId={0}&pkId={1}";
+			const string pk_pattern = "http://www.zhixue.com/zhixuebao/zhixuebao/personal/studentPkData/?examId={0}&pkId={1}";
 
 			var pk_url = string.Format(pk_pattern, examId, stud.BackID);
 			var req = new RestRequest(pk_url, Method.GET);
-			var resBody = client.Execute(req).Content;
+			var resBody = client.Human(req).Content;
 
 			var json = JsonConvert.DeserializeObject<ScoreJson[]>(resBody);
 			return json[1];

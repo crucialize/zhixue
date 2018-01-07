@@ -40,7 +40,7 @@ namespace RestSharp.Human
 		{
 			//parse
 			var url = new Uri(req.Resource);
-			client.BaseUrl = new Uri(url.Scheme + ":\\" + url.Host);
+			client.BaseUrl = new Uri(url.Scheme + "://" + url.Host);
 			req.Resource = url.PathAndQuery;
 
 			var res = client.Execute(req);
@@ -51,13 +51,22 @@ namespace RestSharp.Human
 		{
 			//parse
 			var url = new Uri(req.Resource);
-			client.BaseUrl = new Uri(url.Scheme + ":\\" + url.Host);
+			client.BaseUrl = new Uri(url.Scheme + "://" + url.Host);
 			req.Resource = url.PathAndQuery;
 
 			var res = client.Execute<T>(req);
 			callback(res);
 		}
 
+		public static void HumanAsync(this IRestClient client, IRestRequest req,Action<IRestResponse> Callback)
+		{
+			//parse
+			var url = new Uri(req.Resource);
+			client.BaseUrl = new Uri(url.Scheme + "://" + url.Host);
+			req.Resource = url.PathAndQuery;
+
+			var res = client.ExecuteAsync(req,Callback);
+		}
 
 	}
 }
