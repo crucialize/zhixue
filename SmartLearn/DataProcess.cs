@@ -31,7 +31,15 @@ namespace SmartLearn
 
 		public static List<StudentInfo> LoadFromFile(string filename)
 		{
-			var InfoTextArr = File.ReadAllLines(filename);
+			string[] InfoTextArr;
+			try
+			{
+				InfoTextArr = File.ReadAllLines(filename);
+			}
+			catch (Exception)
+			{
+				InfoTextArr = Properties.Resources.refer.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			}
 			var InfoList = new List<StudentInfo>();
 
 			foreach (var a in InfoTextArr)

@@ -44,8 +44,13 @@ namespace SmartLearn
 			}
 			catch (Exception)
 			{
-				MetroMessageBox.Show(this, "未找到学生信息", "");
+				/*
+				 * MetroMessageBox.Show(this, "未找到学生信息", "");
 				Environment.Exit(0);
+				*/
+
+				infos = StudentInfo.LoadFromFile("refer.txt");
+
 			}
 
 			ReferList = StudentInfo.LoadToRefer(infos);
