@@ -180,12 +180,12 @@ namespace SmartLearn
 							for (int i = 0; i < ClassIndecies.Count; i++)
 							{
 								flag |= classList[ClassIndecies[i]] == stud.ClassID;
+								Console.WriteLine(classList[ClassIndecies[i]]);
 							}
 							if (flag == false)
-								break;
+								continue;
 
 							GetScoreAsync(examId, stud);
-
 
 							void GetScoreAsync(string examId0, StudentInfo stud0)
 							{
