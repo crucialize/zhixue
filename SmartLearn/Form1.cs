@@ -117,7 +117,7 @@ namespace SmartLearn
 			metroButton1.Enabled = false;
 			metroListView2.Enabled = false;
 
-			var reGet = metroCheckBox1.Checked;
+			var reGet = !metroToggle1.Checked;
 
 			new Thread(() =>
 			{
@@ -128,10 +128,16 @@ namespace SmartLearn
 				if (ExamIndices.Count == 0)
 				{
 					MetroMessageBox.Show(this, "未选择考试", "");
+					metroProgressSpinner1.Visible = false;
+					metroButton1.Enabled = true;
+					metroListView2.Enabled = true;
 				}
 				else if (ClassIndecies.Count == 0)
 				{
 					MetroMessageBox.Show(this, "未选择班级", "");
+					metroProgressSpinner1.Visible = false;
+					metroButton1.Enabled = true;
+					metroListView2.Enabled = true;
 				}
 				else if (ExamIndices.Count == 1)
 				{

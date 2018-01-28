@@ -32,7 +32,8 @@
 			this.metroButton1 = new MetroFramework.Controls.MetroButton();
 			this.metroProgressSpinner1 = new MetroFramework.Controls.MetroProgressSpinner();
 			this.metroListView2 = new MetroFramework.Controls.MetroListView();
-			this.metroCheckBox1 = new MetroFramework.Controls.MetroCheckBox();
+			this.metroToggle1 = new MetroFramework.Controls.MetroToggle();
+			this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
 			this.SuspendLayout();
 			// 
 			// metroListView1
@@ -78,28 +79,41 @@
 			this.metroListView2.Location = new System.Drawing.Point(784, 60);
 			this.metroListView2.Name = "metroListView2";
 			this.metroListView2.OwnerDraw = true;
-			this.metroListView2.Size = new System.Drawing.Size(151, 297);
+			this.metroListView2.Size = new System.Drawing.Size(169, 297);
 			this.metroListView2.TabIndex = 3;
 			this.metroListView2.UseCompatibleStateImageBehavior = false;
 			this.metroListView2.UseSelectable = true;
 			this.metroListView2.View = System.Windows.Forms.View.List;
 			// 
-			// metroCheckBox1
+			// metroToggle1
 			// 
-			this.metroCheckBox1.AutoSize = true;
-			this.metroCheckBox1.Location = new System.Drawing.Point(784, 375);
-			this.metroCheckBox1.Name = "metroCheckBox1";
-			this.metroCheckBox1.Size = new System.Drawing.Size(101, 15);
-			this.metroCheckBox1.TabIndex = 4;
-			this.metroCheckBox1.Text = "完全重新获取";
-			this.metroCheckBox1.UseSelectable = true;
+			this.metroToggle1.AutoSize = true;
+			this.metroToggle1.Checked = true;
+			this.metroToggle1.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.metroToggle1.DisplayStatus = false;
+			this.metroToggle1.Location = new System.Drawing.Point(897, 373);
+			this.metroToggle1.Name = "metroToggle1";
+			this.metroToggle1.Size = new System.Drawing.Size(50, 16);
+			this.metroToggle1.TabIndex = 4;
+			this.metroToggle1.Text = "On";
+			this.metroToggle1.UseSelectable = true;
+			// 
+			// metroLabel1
+			// 
+			this.metroLabel1.AutoSize = true;
+			this.metroLabel1.Location = new System.Drawing.Point(784, 370);
+			this.metroLabel1.Name = "metroLabel1";
+			this.metroLabel1.Size = new System.Drawing.Size(107, 19);
+			this.metroLabel1.TabIndex = 5;
+			this.metroLabel1.Text = "优先从缓存获取";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1280, 720);
-			this.Controls.Add(this.metroCheckBox1);
+			this.Controls.Add(this.metroLabel1);
+			this.Controls.Add(this.metroToggle1);
 			this.Controls.Add(this.metroListView2);
 			this.Controls.Add(this.metroProgressSpinner1);
 			this.Controls.Add(this.metroButton1);
@@ -118,7 +132,8 @@
 		private MetroFramework.Controls.MetroButton metroButton1;
 		private MetroFramework.Controls.MetroProgressSpinner metroProgressSpinner1;
 		private MetroFramework.Controls.MetroListView metroListView2;
-		private MetroFramework.Controls.MetroCheckBox metroCheckBox1;
+		private MetroFramework.Controls.MetroToggle metroToggle1;
+		private MetroFramework.Controls.MetroLabel metroLabel1;
 	}
 }
 
